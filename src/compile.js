@@ -1,10 +1,15 @@
 #!/usr/bin/env node
+/*
+ *  CLI that adds private info to config.plist and writes it back.
+ *  Created On 13 April 2023
+ */
 
-import { program } from 'commander'
 import path from 'path'
-import fs from 'fs/promises'
-import yaml from 'js-yaml'
+import rupa from 'rupa'
 import plist from 'plist'
+import yaml from 'js-yaml'
+import fs from 'fs/promises'
+import { program } from 'commander'
 
 // verbose() will turn on or off verbosity
 // in the boot args
@@ -36,13 +41,16 @@ const smbios = async (sample, file) => {
 
 const main = async () => {
     program.name('hackintosh-2020')
-    .option('--smbios <file>', 'SMBIOS YAML file')
-    .option('--out <file>', 'Compiled config.plist for OpenCore')
-    .option('-v, --verbose', 'Enable or disable verbose mode.', false)
-    .parse(process.argv)
+        .option('--smbios <file>', 'SMBIOS YAML file')
+        .option('--out <file>', 'Compiled config.plist for OpenCore')
+        .option('-v, --verbose', 'Enable or disable verbose mode.', false)
+        .parse(process.argv)
+
+    // attach rupa plugin
+    rupa(program)
 
     // remove junk from Commander's program
-    const remove = [ 'commands', 'options', 'parent', 'rawArgs', 'program', 'Command', 'Option', 'CommanderError', 'args']
+    const remove = ['commands', 'options', 'parent', 'rawArgs', 'program', 'Command', 'Option', 'CommanderError', 'args']
     let args = {}
     Object.keys(program).filter(key => key.startsWith('_') == false).filter(key => remove.includes(key) == false).forEach(key => args[key] = program[key])
 
@@ -51,10 +59,10 @@ const main = async () => {
         program.outputHelp()
         process.exit(0)
     }
-    
+
     // read the plist file
     const sample = plist.parse(await fs.readFile('data/config.sample.plist', { encoding: 'utf-8' }))
-    
+
     // inject SMBIOS values
     await smbios(sample, args.smbios)
     await verbose(sample, args.verbose)

@@ -1,24 +1,16 @@
 {
-  "name": "hackintosh-2020",
-  "version": "1.0.0",
-  "description": "",
-  "type": "module",
-  "bin": "src/compile.js",
-  "dependencies": {
-    "commander": "^6.2.0",
-    "js-yaml": "^3.14.1",
-    "plist": "^3.0.1"
-  },
-  "devDependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vasanthdeveloper/hackintosh-2020.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/vasanthdeveloper/hackintosh-2020/issues"
-  },
-  "homepage": "https://github.com/vasanthdeveloper/hackintosh-2020#readme"
+    "name": "hackintosh-2020",
+    "version": "1.0.0",
+    "type": "module",
+    "bin": "src/compile.js",
+    "dependencies": {
+        "commander": "^10.0.0",
+        "js-yaml": "^4.1.0",
+        "plist": "^3.0.6",
+        "rupa": "^0.0.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/vasanthdeveloper/hackintosh-2020.git"
+    }
 }
