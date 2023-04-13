@@ -39,40 +39,35 @@ const smbios = async (sample, file) => {
     sample.PlatformInfo.Generic.SystemUUID = smbios.uuid
 }
 
-const main = async () => {
-    program.name('hackintosh-2020')
-        .option('--smbios <file>', 'SMBIOS YAML file')
-        .option('--out <file>', 'Compiled config.plist for OpenCore')
-        .option('-v, --verbose', 'Enable or disable verbose mode.', false)
-        .parse(process.argv)
+program.name('hackintosh-2020')
+    .option('--smbios <file>', 'SMBIOS YAML file')
+    .option('--out <file>', 'Compiled config.plist for OpenCore')
+    .option('-v, --verbose', 'Enable or disable verbose mode.', false)
+    .parse(process.argv)
 
-    // attach rupa plugin
-    rupa(program)
+// attach rupa plugin
+rupa(program)
 
-    // remove junk from Commander's program
-    const remove = ['commands', 'options', 'parent', 'rawArgs', 'program', 'Command', 'Option', 'CommanderError', 'args']
-    let args = {}
-    Object.keys(program).filter(key => key.startsWith('_') == false).filter(key => remove.includes(key) == false).forEach(key => args[key] = program[key])
+// remove junk from Commander's program
+const remove = ['commands', 'options', 'parent', 'rawArgs', 'program', 'Command', 'Option', 'CommanderError', 'args']
+let args = {}
+Object.keys(program).filter(key => key.startsWith('_') == false).filter(key => remove.includes(key) == false).forEach(key => args[key] = program[key])
 
-    // handle initial command
-    if (!args.smbios || !args.out) {
-        program.outputHelp()
-        process.exit(0)
-    }
-
-    // read the plist file
-    const sample = plist.parse(await fs.readFile('data/config.sample.plist', { encoding: 'utf-8' }))
-
-    // inject SMBIOS values
-    await smbios(sample, args.smbios)
-    await verbose(sample, args.verbose)
-
-    // write back the file
-    // white converting it back into a plist file
-    await fs.writeFile(path.resolve(args.out), plist.build(sample))
-
-    console.log('✅ done!')
+// handle initial command
+if (!args.smbios || !args.out) {
+    program.outputHelp()
+    process.exit(0)
 }
 
-// start the cli
-main()
+// read the plist file
+const sample = plist.parse(await fs.readFile('data/config.sample.plist', { encoding: 'utf-8' }))
+
+// inject SMBIOS values
+await smbios(sample, args.smbios)
+await verbose(sample, args.verbose)
+
+// write back the file
+// white converting it back into a plist file
+await fs.writeFile(path.resolve(args.out), plist.build(sample))
+
+console.log('✅ done!')
